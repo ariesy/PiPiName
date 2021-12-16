@@ -4,9 +4,9 @@ from stroke_number import get_stroke_number
 
 
 class Name:
-    __slots__ = "first_name", "stroke_number1", "stroke_number2", "count", "source", "gender"
+    __slots__ = "first_name", "stroke_number1", "stroke_number2", "count", "source", "gender","author", "title"
 
-    def __init__(self, first_name, source, gender):
+    def __init__(self, first_name, source, gender, author="", title=""):
         self.stroke_number1 = get_stroke_number(first_name[0])
         self.stroke_number2 = get_stroke_number(first_name[1])
         self.count = len(first_name)
@@ -16,6 +16,8 @@ class Name:
         # 转回简体
         cc = OpenCC('t2s')
         self.first_name = cc.convert(first_name)
+        self.author=author
+        self.title=title
 
     def __eq__(self, other):
         return self.first_name == other.first_name
@@ -32,7 +34,9 @@ class Name:
                self.first_name[0] + "\t" + \
                self.first_name[1] + "\t" + \
                str(self.stroke_number1) + "\t" + str(self.stroke_number2) + "\t" + \
-               self.source
+               self.source + "\t" + \
+               self.author + "\t" + \
+               self.title
 
     def __hash__(self):
         return hash(self.first_name)

@@ -149,10 +149,18 @@ def get_name_json(path, names, column, stroke_list):
                 # 转繁体
                 string = s2tConverter.convert(string)
                 string_list = re.split('！？，。,.?! \n', string)
-                check_and_add_names(names, string_list, stroke_list)
+                author=""
+                title=""
+                if("author" in data[j]):
+                    author=data[j]["author"]
+                if("title" in data[j]):
+                    title = data[j]["title"]
+                elif("rhythmic" in data[j]):
+                    title=data[j]["rhythmic"]
+                check_and_add_names(names, string_list, stroke_list, author, title)
 
 
-def check_and_add_names(names, string_list, stroke_list):
+def check_and_add_names(names, string_list, stroke_list, author="", title=""):
     for sentence in string_list:
         sentence = sentence.strip()
         # 转换笔画数
@@ -170,7 +178,7 @@ def check_and_add_names(names, string_list, stroke_list):
                 if index0 < index1:
                     name0 = sentence[index0]
                     name1 = sentence[index1]
-                    names.add(Name(name0 + name1, sentence, ''))
+                    names.add(Name(name0 + name1, sentence, '', author, title))
 
 
 # 判断是否为汉字
