@@ -95,5 +95,5 @@ check_name_resource = True
 - [OpenCC](https://github.com/BYVoid/OpenCC)
 - [chinese-poetry](https://github.com/chinese-poetry/chinese-poetry)
 - [chineseStroke](https://github.com/WTree/chineseStroke)
-- [Chinese-Names-Corpus]()
+- [Chinese-Names-Corpus](https://github.com/wainshine/Chinese-Names-Corpus)
 - [hanzi_chaizi](https://github.com/howl-anderson/hanzi_chaizi)
