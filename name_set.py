@@ -12,7 +12,7 @@ s2tConverter = opencc.OpenCC('s2t.json')
 t2sConverter = opencc.OpenCC('t2s.json')
 
 
-def get_source(source, validate, stroke_list):
+def get_source(source, validate, stroke_list, author=""):
     exist_name = dict()
     if validate:
         print('>>加载名字库...')
@@ -42,17 +42,17 @@ def get_source(source, validate, stroke_list):
     elif source == 5:
         print('>>加载唐诗...')
         for i in range(0, 58000, 1000):
-            get_name_json('唐诗/poet.tang.' + str(i), names, 'paragraphs', stroke_list)
+            get_name_json('唐诗/poet.tang.' + str(i), names, 'paragraphs', stroke_list, author)
     # 宋诗
     elif source == 6:
         print('>>加载宋诗...')
         for i in range(0, 255000, 1000):
-            get_name_json('宋诗/poet.song.' + str(i), names, 'paragraphs', stroke_list)
+            get_name_json('宋诗/poet.song.' + str(i), names, 'paragraphs', stroke_list, author)
     # 宋词
     elif source == 7:
         print('>>加载宋词...')
         for i in range(0, 22000, 1000):
-            get_name_json('宋词/ci.song.' + str(i), names, 'paragraphs', stroke_list)
+            get_name_json('宋词/ci.song.' + str(i), names, 'paragraphs', stroke_list, author)
     else:
         print('词库号输入错误')
 
@@ -135,9 +135,10 @@ def get_name_txt(path, names, stroke_list):
             check_and_add_names(names, string_list, stroke_list)
 
 
-def get_name_json(path, names, column, stroke_list):
+def get_name_json(path, names, column, stroke_list, author=""):
     with open('data/' + path + '.json', encoding='utf-8') as f:
-        data = json.loads(f.read())
+        data = json.loads(f.read())        
+        data = list(filter(lambda x: len(author) == 0 or not "author" in x or x["author"] == author, data))
         size = len(data)
         progress = 0
         for j in range(0, size):

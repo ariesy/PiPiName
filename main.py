@@ -1,6 +1,6 @@
-from config import name_source, last_name, dislike_words, \
+from config import name_source, name_source_dict, last_name, dislike_words, \
     min_stroke_count, max_stroke_count, allow_general, name_validate, gender, \
-    check_name, check_name_resource
+    check_name, check_name_resource, author
 from name_set import check_resource, get_source
 from wuge import check_wuge_config, get_stroke_list
 
@@ -21,8 +21,9 @@ if len(check_name) == 3:
 else:
     # 起名
     names = list()
-    with open("names.txt", "w+", encoding='utf-8') as f:
-        for i in get_source(name_source, name_validate, get_stroke_list(last_name, allow_general)):
+    filename = f"names-{name_source_dict[name_source]}-{author}.txt" 
+    with open(filename, ''"w+", encoding='utf-8') as f:
+        for i in get_source(name_source, name_validate, get_stroke_list(last_name, allow_general), author):
             if i.stroke_number1 < min_stroke_count or i.stroke_number1 > max_stroke_count or \
                     i.stroke_number2 < min_stroke_count or i.stroke_number2 > max_stroke_count:
                 # 笔画数过滤
@@ -38,4 +39,4 @@ else:
         names.sort()
         for i in names:
             f.write(last_name + str(i) + "\n")
-        print(">>输出完毕，请查看「names.txt」文件")
+        print(f">>输出完毕，请查看「{filename}」文件")

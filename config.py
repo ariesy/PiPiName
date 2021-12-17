@@ -2,6 +2,7 @@
 # 0: "默认", 1: "诗经", 2: "楚辞", 3: "论语",
 # 4: "周易", 5: "唐诗", 6: "宋诗", 7: "宋词"
 name_source = 6
+name_source_dict = {0:"默认", 1:"诗经", 2:"楚辞", 3:"论语", 4:"周易",5:"唐诗",6: "宋诗",7: "宋词"}
 
 # 姓，仅支持单姓
 last_name = "朱"
@@ -19,7 +20,7 @@ max_stroke_count = 30
 allow_general = False
 
 # 是否筛选名字，仅输出名字库中存在的名字，可以过滤明显不合适的名字
-name_validate = True
+name_validate = False
 
 # 是否筛选性别，男/女，空则不筛选，仅当开启名字筛选时有效
 gender = ""
@@ -32,3 +33,6 @@ check_name = ""
 
 # 是否显示名字来源
 check_name_resource = True
+
+#只挑选作者(支持唐诗，宋诗，宋词)
+author = "李清照"
