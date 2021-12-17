@@ -4,9 +4,11 @@ from stroke_number import get_stroke_number
 
 
 class Name:
-    __slots__ = "first_name", "stroke_number1", "stroke_number2", "count", "source", "gender","author", "title"
+    __slots__ ="last_name", "first_name","stroke_number0", "stroke_number1", "stroke_number2", "count", "source", "gender","author", "title"
 
-    def __init__(self, first_name, source, gender, author="", title=""):
+    def __init__(self, last_name, first_name, source, gender, author="", title=""):
+        self.last_name = last_name
+        self.stroke_number0 = get_stroke_number(last_name)
         self.stroke_number1 = get_stroke_number(first_name[0])
         self.stroke_number2 = get_stroke_number(first_name[1])
         self.count = len(first_name)

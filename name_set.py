@@ -12,7 +12,7 @@ s2tConverter = opencc.OpenCC('s2t.json')
 t2sConverter = opencc.OpenCC('t2s.json')
 
 
-def get_source(source, validate, stroke_list, author=""):
+def get_source(source, validate, stroke_list, last_name, author=""):
     exist_name = dict()
     if validate:
         print('>>加载名字库...')
@@ -21,38 +21,38 @@ def get_source(source, validate, stroke_list, author=""):
     names = set()
     # 默认
     if source == 0:
-        get_name_dat('Chinese_Names', names, stroke_list)
+        get_name_dat('Chinese_Names', last_name, names, stroke_list)
     # 诗经
     elif source == 1:
         print('>>加载诗经...')
-        get_name_json('诗经', names, 'content', stroke_list)
+        get_name_json('诗经', last_name, names, 'content', stroke_list)
     # 楚辞
     elif source == 2:
         print('>>加载楚辞...')
-        get_name_txt('楚辞', names, stroke_list)
+        get_name_txt('楚辞', last_name, names, stroke_list)
     # 论语
     elif source == 3:
         print('>>加载论语...')
-        get_name_json('论语', names, 'paragraphs', stroke_list)
+        get_name_json('论语', last_name, names, 'paragraphs', stroke_list)
     # 周易
     elif source == 4:
         print('>>加载周易...')
-        get_name_txt('周易', names, stroke_list)
+        get_name_txt('周易', last_name, names, stroke_list)
     # 唐诗
     elif source == 5:
         print('>>加载唐诗...')
         for i in range(0, 58000, 1000):
-            get_name_json('唐诗/poet.tang.' + str(i), names, 'paragraphs', stroke_list, author)
+            get_name_json('唐诗/poet.tang.' + str(i), last_name, names, 'paragraphs', stroke_list, author)
     # 宋诗
     elif source == 6:
         print('>>加载宋诗...')
         for i in range(0, 255000, 1000):
-            get_name_json('宋诗/poet.song.' + str(i), names, 'paragraphs', stroke_list, author)
+            get_name_json('宋诗/poet.song.' + str(i), last_name, names, 'paragraphs', stroke_list, author)
     # 宋词
     elif source == 7:
         print('>>加载宋词...')
         for i in range(0, 22000, 1000):
-            get_name_json('宋词/ci.song.' + str(i), names, 'paragraphs', stroke_list, author)
+            get_name_json('宋词/ci.song.' + str(i), last_name, names, 'paragraphs', stroke_list, author)
     else:
         print('词库号输入错误')
 
@@ -88,7 +88,7 @@ def get_name_valid(path, exist_names):
                 exist_names[name] = gender
 
 
-def get_name_dat(path, names, stroke_list):
+def get_name_dat(path,last_name, names, stroke_list):
     with open('data/' + path + '.dat', encoding='utf-8') as f:
         line_list = f.readlines()
         size = len(line_list)
@@ -114,10 +114,10 @@ def get_name_dat(path, names, stroke_list):
                 # 判断是否包含指定笔画数
                 for stroke in stroke_list:
                     if stroke[0] == strokes[0] and stroke[1] == strokes[1]:
-                        names.add(Name(name, '', gender))
+                        names.add(Name(last_name, name, '', gender))
 
 
-def get_name_txt(path, names, stroke_list):
+def get_name_txt(path, last_name, names, stroke_list):
     with open('data/' + path + '.txt', encoding='utf-8') as f:
         line_list = f.readlines()
         size = len(line_list)
@@ -132,10 +132,10 @@ def get_name_txt(path, names, stroke_list):
             if re.search(r'\w', string) is None:
                 continue
             string_list = re.split('！？，。,.?! \n', string)
-            check_and_add_names(names, string_list, stroke_list)
+            check_and_add_names(last_name, names, string_list, stroke_list)
 
 
-def get_name_json(path, names, column, stroke_list, author=""):
+def get_name_json(path, last_name, names, column, stroke_list, author=""):
     with open('data/' + path + '.json', encoding='utf-8') as f:
         data = json.loads(f.read())        
         data = list(filter(lambda x: len(author) == 0 or not "author" in x or x["author"] == author, data))
@@ -158,10 +158,10 @@ def get_name_json(path, names, column, stroke_list, author=""):
                     title = data[j]["title"]
                 elif("rhythmic" in data[j]):
                     title=data[j]["rhythmic"]
-                check_and_add_names(names, string_list, stroke_list, author, title)
+                check_and_add_names(last_name, names, string_list, stroke_list, author, title)
 
 
-def check_and_add_names(names, string_list, stroke_list, author="", title=""):
+def check_and_add_names(last_name, names, string_list, stroke_list, author="", title=""):
     for sentence in string_list:
         sentence = sentence.strip()
         # 转换笔画数
@@ -179,7 +179,7 @@ def check_and_add_names(names, string_list, stroke_list, author="", title=""):
                 if index0 < index1:
                     name0 = sentence[index0]
                     name1 = sentence[index1]
-                    names.add(Name(name0 + name1, sentence, '', author, title))
+                    names.add(Name(last_name, name0 + name1, sentence, '', author, title))
 
 
 # 判断是否为汉字

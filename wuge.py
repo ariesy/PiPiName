@@ -13,7 +13,7 @@ stroke_bads = [2, 4, 9, 10, 12, 14, 19, 20, 22, 26, 28, 30, 34, 36, 40, 43, 44, 
 stroke_list = list()
 
 
-def get_stroke_list(last_name, allow_general):
+def get_stroke_list(last_name, allow_general, use_sancai = True, use_wuge = True):
     print(">>计算笔画组合...")
     # 姓氏转繁体
     converter = opencc.OpenCC('s2t.json')
@@ -31,15 +31,20 @@ def get_stroke_list(last_name, allow_general):
             zong = n + i + j
             # 外格
             wai = zong - ren + 1
-
-            if ren in stroke_goods and di in stroke_goods and zong in stroke_goods and wai in stroke_goods:
-                if check_sancai_good([tian, ren, di], allow_general):
-                    stroke_list.append([i, j])
-            elif allow_general and \
-                    (ren in stroke_goods or ren in stroke_generals) and \
-                    (di in stroke_goods or di in stroke_generals) and \
-                    (zong in stroke_goods or zong in stroke_generals) and \
-                    (wai in stroke_goods or wai in stroke_generals):
+            if not use_wuge and not use_sancai:
+                stroke_list.append([i, j])
+            elif use_wuge:
+                if ren in stroke_goods and di in stroke_goods and zong in stroke_goods and wai in stroke_goods:
+                    if not use_sancai or check_sancai_good([tian, ren, di], allow_general):
+                        stroke_list.append([i, j])
+                elif allow_general and \
+                        (ren in stroke_goods or ren in stroke_generals) and \
+                        (di in stroke_goods or di in stroke_generals) and \
+                        (zong in stroke_goods or zong in stroke_generals) and \
+                        (wai in stroke_goods or wai in stroke_generals):
+                    if not use_sancai or check_sancai_good([tian, ren, di], allow_general):
+                        stroke_list.append([i, j])
+            elif use_sancai:
                 if check_sancai_good([tian, ren, di], allow_general):
                     stroke_list.append([i, j])
     print(">>" + str(stroke_list))
