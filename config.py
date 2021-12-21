@@ -1,7 +1,7 @@
 # 选择词库
 # 0: "默认", 1: "诗经", 2: "楚辞", 3: "论语",
 # 4: "周易", 5: "唐诗", 6: "宋诗", 7: "宋词"
-name_source = 6
+name_source = 5
 name_source_dict = {0:"默认", 1:"诗经", 2:"楚辞", 3:"论语", 4:"周易",5:"唐诗",6: "宋诗",7: "宋词"}
 
 use_sancai=False
@@ -11,7 +11,7 @@ use_wuge=False
 last_name = "朱"
 
 # 不想要的字，结果中不会出现这些字
-dislike_words = list("苦死丑愁仇缺病奸寒败怜废贱难破赖危肉悲残鸡狗猪马猴不一九万十二")
+dislike_words = list("苦死丑愁仇缺病奸寒败怜废贱难破赖危肉悲残鸡狗猪马猴不一二三四五六七八九十百万下乞夫妻宝肝肠逆凶泥狼狈奴妇嫠父孙惊鬼龟愧血狸辚泣诡虏脱祸看浑脑伤")
 # 不想要的读音
 dislike_pinyin={"shi"}
 
@@ -27,7 +27,7 @@ max_stroke_total = 60
 allow_general = True
 
 # 是否筛选名字，仅输出名字库中存在的名字，可以过滤明显不合适的名字
-name_validate = True
+name_validate = False
 
 # 是否筛选性别，男/女，空则不筛选，仅当开启名字筛选时有效
 gender = ""
@@ -42,4 +42,7 @@ check_name = ""
 check_name_resource = True
 
 #只挑选作者(支持唐诗，宋诗，宋词)
-author = "李清照"
+author = "李商隱"
+
+#过滤l和n声母避免ln不分
+check_l_n = True

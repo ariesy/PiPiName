@@ -1,7 +1,8 @@
 import json
 import re
+from typing import Dict, List, Set, Text
 
-import opencc
+import opencc 
 
 from name import Name
 from stroke_number import get_stroke_number
@@ -12,47 +13,47 @@ s2tConverter = opencc.OpenCC('s2t.json')
 t2sConverter = opencc.OpenCC('t2s.json')
 
 
-def get_source(source, validate, stroke_list, last_name, author=""):
-    exist_name = dict()
+def get_source(source:int, validate:bool, stroke_list:List[List[int]], last_name:str, author:str="") -> Set[Name] :
+    exist_names:Dict[str, str] = {}
     if validate:
         print('>>加载名字库...')
-        get_name_valid('Chinese_Names', exist_name)
+        exist_names = get_name_valid('Chinese_Names')
 
-    names = set()
+    names : Set[Name] = set()
     # 默认
     if source == 0:
-        get_name_dat('Chinese_Names', last_name, names, stroke_list)
+        names.update(get_name_dat('Chinese_Names', last_name, stroke_list))
     # 诗经
     elif source == 1:
         print('>>加载诗经...')
-        get_name_json('诗经', last_name, names, 'content', stroke_list)
+        names.update(get_name_json('诗经', last_name, 'content', stroke_list))
     # 楚辞
     elif source == 2:
         print('>>加载楚辞...')
-        get_name_txt('楚辞', last_name, names, stroke_list)
+        names.update(get_name_txt('楚辞', last_name, stroke_list))
     # 论语
     elif source == 3:
         print('>>加载论语...')
-        get_name_json('论语', last_name, names, 'paragraphs', stroke_list)
+        names.update(get_name_json('论语', last_name, 'paragraphs', stroke_list))
     # 周易
     elif source == 4:
         print('>>加载周易...')
-        get_name_txt('周易', last_name, names, stroke_list)
+        names.update(get_name_txt('周易', last_name, stroke_list))
     # 唐诗
     elif source == 5:
         print('>>加载唐诗...')
         for i in range(0, 58000, 1000):
-            get_name_json('唐诗/poet.tang.' + str(i), last_name, names, 'paragraphs', stroke_list, author)
+            names.update(get_name_json('唐诗/poet.tang.' + str(i), last_name, 'paragraphs', stroke_list, author))
     # 宋诗
     elif source == 6:
         print('>>加载宋诗...')
         for i in range(0, 255000, 1000):
-            get_name_json('宋诗/poet.song.' + str(i), last_name, names, 'paragraphs', stroke_list, author)
+            names.update(get_name_json('宋诗/poet.song.' + str(i), last_name, 'paragraphs', stroke_list, author))
     # 宋词
     elif source == 7:
         print('>>加载宋词...')
         for i in range(0, 22000, 1000):
-            get_name_json('宋词/ci.song.' + str(i), last_name, names, 'paragraphs', stroke_list, author)
+            names.update(get_name_json('宋词/ci.song.' + str(i), last_name, 'paragraphs', stroke_list, author))
     else:
         print('词库号输入错误')
 
@@ -60,13 +61,13 @@ def get_source(source, validate, stroke_list, last_name, author=""):
     # 检查名字是否存在并添加性别
     if validate:
         if source != 0:
-            names = get_intersect(names, exist_name)
+            names = get_intersect(names, exist_names)
 
     return names
 
 
-def get_intersect(names, exist_name):
-    result = set()
+def get_intersect(names:Set[Name], exist_name:Dict[str, str]) -> Set[Name]:
+    result:Set[Name] = set()
     for i in names:
         if i.first_name in exist_name.keys():
             i.gender = exist_name[i.first_name]
@@ -75,7 +76,8 @@ def get_intersect(names, exist_name):
 
 
 # 加载名字库
-def get_name_valid(path, exist_names):
+def get_name_valid(path:str) -> Dict[str,str]:
+    exist_names : Dict[str, str] = dict()
     with open('data/' + path + '.dat', encoding='utf-8') as f:
         for line in f:
             data = line.split(',')
@@ -86,9 +88,11 @@ def get_name_valid(path, exist_names):
                     exist_names[name] = '双'
             else:
                 exist_names[name] = gender
+    return exist_names
 
 
-def get_name_dat(path,last_name, names, stroke_list):
+def get_name_dat(path:str,last_name:str, stroke_list:List[List[int]]) -> Set[Name]:
+    names: Set[Name] = set()
     with open('data/' + path + '.dat', encoding='utf-8') as f:
         line_list = f.readlines()
         size = len(line_list)
@@ -115,9 +119,11 @@ def get_name_dat(path,last_name, names, stroke_list):
                 for stroke in stroke_list:
                     if stroke[0] == strokes[0] and stroke[1] == strokes[1]:
                         names.add(Name(last_name, name, '', gender))
+    return names
 
 
-def get_name_txt(path, last_name, names, stroke_list):
+def get_name_txt(path:str, last_name:str, stroke_list:List[List[int]]) -> Set[Name]:
+    names: Set[Name] = set()
     with open('data/' + path + '.txt', encoding='utf-8') as f:
         line_list = f.readlines()
         size = len(line_list)
@@ -132,10 +138,12 @@ def get_name_txt(path, last_name, names, stroke_list):
             if re.search(r'\w', string) is None:
                 continue
             string_list = re.split('！？，。,.?! \n', string)
-            check_and_add_names(last_name, names, string_list, stroke_list)
+            names.update(check_and_add_names(last_name, string_list, stroke_list))
+    return names
 
 
-def get_name_json(path, last_name, names, column, stroke_list, author=""):
+def get_name_json(path:str, last_name:str, column:str, stroke_list:List[List[int]], author:str="") -> Set[Name]:
+    names: Set[Name] = set()
     with open('data/' + path + '.json', encoding='utf-8') as f:
         data = json.loads(f.read())        
         data = list(filter(lambda x: len(author) == 0 or not "author" in x or x["author"] == author, data))
@@ -158,10 +166,12 @@ def get_name_json(path, last_name, names, column, stroke_list, author=""):
                     title = data[j]["title"]
                 elif("rhythmic" in data[j]):
                     title=data[j]["rhythmic"]
-                check_and_add_names(last_name, names, string_list, stroke_list, author, title)
+                names.update(check_and_add_names(last_name, string_list, stroke_list, author, title))
+    return names
 
 
-def check_and_add_names(last_name, names, string_list, stroke_list, author="", title=""):
+def check_and_add_names(last_name:str, string_list:List[str], stroke_list:List[List[int]], author:str="", title:str="") -> Set[Name]:
+    names: Set[Name] = set()
     for sentence in string_list:
         sentence = sentence.strip()
         # 转换笔画数
@@ -180,17 +190,18 @@ def check_and_add_names(last_name, names, string_list, stroke_list, author="", t
                     name0 = sentence[index0]
                     name1 = sentence[index1]
                     names.add(Name(last_name, name0 + name1, sentence, '', author, title))
+    return names
 
 
 # 判断是否为汉字
-def is_chinese(uchar):
-    if u'\u4e00' <= uchar <= u'\u9fa5':
+def is_chinese(uchar:Text) -> bool:
+    if '\u4e00' <= uchar <= '\u9fa5':
         return True
     else:
         return False
 
 
-def check_resource(name):
+def check_resource(name:str) -> None:
     if len(name) != 3:
         return
     print('正在生成名字来源...\n')
@@ -206,7 +217,7 @@ def check_resource(name):
         check_name_json('宋词/ci.song.' + str(i), name, 'paragraphs')
 
 
-def check_name_json(path, name, column):
+def check_name_json(path:str, name:str, column:str) -> None:
     with open('data/' + path + '.json', encoding='utf-8') as f:
         data = json.loads(f.read())
         size = len(data)
@@ -228,7 +239,7 @@ def check_name_json(path, name, column):
                 check_name_resource(title, name, string_list)
 
 
-def check_name_txt(path, name):
+def check_name_txt(path:str, name:str) -> None:
     with open('data/' + path + '.txt', encoding='utf-8') as f:
         line_list = f.readlines()
         size = len(line_list)
@@ -239,7 +250,7 @@ def check_name_txt(path, name):
             check_name_resource(path, name, string_list)
 
 
-def check_name_resource(title, name, string_list):
+def check_name_resource(title:str, name:str, string_list:List[str]) -> None:
     for sentence in string_list:
         if title.startswith('唐诗') or title.startswith('宋诗'):
             # 转简体

@@ -1,12 +1,13 @@
 from config import name_source, name_source_dict, last_name, dislike_words, \
     min_stroke_count, max_stroke_count, allow_general, name_validate, gender, \
-    check_name, check_name_resource, author, use_wuge, use_sancai,max_stroke_total
+    check_name, check_name_resource, author, use_wuge, use_sancai,max_stroke_total, dislike_pinyin, \
+    check_l_n
 from name_set import check_resource, get_source
 from wuge import check_wuge_config, get_stroke_list
 from duyin import check_name_duyin
 
 
-def contain_bad_word(first_name):
+def contain_bad_word(first_name:str) ->bool:
     for word in first_name:
         if word in dislike_words:
             return True
@@ -36,7 +37,7 @@ else:
             if contain_bad_word(i.first_name):
                 # 不喜欢字过滤
                 continue
-            if(not check_name_duyin(i)):
+            if(not check_name_duyin(i, dislike_pinyin, check_l_n)):
                 continue
             names.append(i)
         print(">>输出结果...")

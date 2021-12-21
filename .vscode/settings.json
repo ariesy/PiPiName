@@ -4,5 +4,16 @@
         "MD025": {
             "front_matter_title": ""
         }
-    }
+    },
+    "python.linting.mypyEnabled": true,
+    "python.linting.enabled": true,
+    "python.linting.mypyCategorySeverity.error": "Warning",
+    "mypy.runUsingActiveInterpreter": true,
+    "mypy.configFile": ".vscode\\.mypy.ini",
+    "cSpell.words": [
+        "opencc",
+        "pypinyin",
+        "wuge"
+    ],
+    "python.linting.pylintEnabled": false
 }

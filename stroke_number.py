@@ -21,7 +21,7 @@ with open('data/chaizi-ft.dat', encoding='utf-8') as f:
         split_dic[temp[0]] = split_list
 
 
-def get_stroke_number(word):
+def get_stroke_number(word:str) -> int:
     total = 0
     for i in word:
         if "一" in i:
@@ -50,7 +50,7 @@ def get_stroke_number(word):
 
 
 # 检查特殊部首笔画
-def get_final_number(word, number):
+def get_final_number(word:str, number:int) -> int:
     for i in word:
         if i in split_dic:
             splits = split_dic[i]

@@ -1,3 +1,4 @@
+from typing import List, Tuple
 import opencc
 
 from stroke_number import get_stroke_number
@@ -10,10 +11,9 @@ stroke_generals = [27, 38, 42, 55, 58, 71, 72, 73, 77, 78]
 stroke_bads = [2, 4, 9, 10, 12, 14, 19, 20, 22, 26, 28, 30, 34, 36, 40, 43, 44, 46, 49, 50, 51, 53, 54, 56, 59, 60, 62,
                64, 66, 69, 70, 74, 75, 76, 79, 80]
 
-stroke_list = list()
 
-
-def get_stroke_list(last_name, allow_general, use_sancai = True, use_wuge = True):
+def get_stroke_list(last_name:str, allow_general:bool, use_sancai:bool = True, use_wuge:bool = True) ->List[List[int]]:
+    stroke_list:List[List[int]]= list()
     print(">>计算笔画组合...")
     # 姓氏转繁体
     converter = opencc.OpenCC('s2t.json')
@@ -72,7 +72,7 @@ wuxing_bads = ["木木金", "木火金", "木火水", "木土木", "木土水", 
 
 
 # 检查三才配置吉
-def check_sancai_good(counts, allow_general):
+def check_sancai_good(counts:List[int], allow_general:bool) -> bool:
     config = get_sancai_config(counts)
     if config in wuxing_goods:
         return True
@@ -82,7 +82,7 @@ def check_sancai_good(counts, allow_general):
 
 
 # 获取对应五行
-def get_wuxing(count):
+def get_wuxing(count:int) -> str:
     count = count % 10
     if count == 1 or count == 2:
         return "木"
@@ -92,12 +92,12 @@ def get_wuxing(count):
         return "土"
     elif count == 7 or count == 8:
         return "金"
-    elif count == 9 or count == 0:
+    else:
         return "水"
 
 
 # 查看三才五格配置
-def check_wuge_config(name):
+def check_wuge_config(name:str) ->None:
     if len(name) != 3:
         return
     # 姓名转繁体
@@ -131,14 +131,14 @@ def check_wuge_config(name):
 
 
 # 获取三才配置
-def get_sancai_config(counts):
+def get_sancai_config(counts:List[int]) -> str:
     config = ""
     for count in counts:
         config += get_wuxing(count)
     return config
 
 
-def get_stroke_type(stroke):
+def get_stroke_type(stroke:int) -> str:
     if stroke in stroke_goods:
         return "大吉"
     elif stroke in stroke_generals:
@@ -149,7 +149,7 @@ def get_stroke_type(stroke):
         return ""
 
 
-def get_sancai_type(config):
+def get_sancai_type(config:str) -> str:
     if config in wuxing_goods:
         return "大吉"
     elif config in wuxing_generals:
